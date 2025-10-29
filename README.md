@@ -1,139 +1,179 @@
-# 🧠 Phase 1 – Réflexion
-## 1. Analyse du problème
+# **Phase 1 – Réflexion et Conception**
 
-Le système doit permettre de **gérer plusieurs comptes bancaires**, chacun associé à un client, un numéro de compte et un solde.  
-Des opérations de base doivent être possibles :
+## **1️⃣ Analyse du problème**
 
-- Crédits (ajouts d’argent),
-    
-- Retraits (retraits d’argent si solde suffisant),
-    
-- Transferts (d’un compte à un autre),
-    
-- Affichage des informations du compte.
-    
+### **Objectif**
 
----
+Créer un système de gestion bancaire avec plusieurs types d’utilisateurs et des comptes bancaires sécurisés.
 
-## 2. Données à stocker
+### **Données essentielles**
 
-### a. Classe `Client`
+1. **Compte bancaire**
 
-Représente le propriétaire d’un compte bancaire.
+   * Numéro de compte (string)
+   * Propriétaire (Client)
+   * Solde (double)
 
-| Attribut   | Type          | Description                  |
-| ---------- | ------------- | ---------------------------- |
-| `nom`      | `std::string` | Nom du client                |
-| `prenom`   | `std::string` | Prénom du client             |
-| `adresse`  | `std::string` | Adresse postale              |
-| `idClient` | `int`         | Identifiant unique du client |
+2. **Utilisateur**
 
-**Méthodes possibles :**
+   * Nom, prénom
+   * Login (identifiant unique)
+   * Mot de passe
 
-- `afficherInfos()` : affiche les informations du client.
-    
-- (optionnel) `modifierAdresse(std::string nouvelleAdresse)`.
-    
+3. **Client** (hérite de Utilisateur)
+
+   * Adresse / ville
+   * Peut effectuer : dépôt, retrait, consultation solde
+
+4. **Admin** (hérite de Utilisateur)
+
+   * Peut créer de nouveaux comptes pour les clients
+   * Peut afficher tous les comptes
 
 ---
 
-### b. Classe `CompteBancaire`
+## **2️⃣ Opérations à implémenter**
 
-Représente un compte bancaire individuel.
+### **CompteBancaire**
 
-| Attribut       | Type          | Description                      |
-| -------------- | ------------- | -------------------------------- |
-| `numeroCompte` | `std::string` | Identifiant unique du compte     |
-| `proprietaire` | `Client`      | Client propriétaire du compte    |
-| `solde`        | `double`      | Montant disponible sur le compte |
+* `deposer(double montant)` : ajouter de l’argent
+* `retirer(double montant)` : retirer de l’argent si le solde le permet
+* `afficherInfos()` : afficher le numéro, le solde et le propriétaire
 
-**Méthodes publiques :**
+### **Banque**
 
-- `crediter(double montant)` → ajoute de l’argent au compte.
-    
-- `debiter(double montant)` → retire de l’argent si le solde est suffisant.
-    
-- `transferer(CompteBancaire &autreCompte, double montant)` → déplace de l’argent d’un compte à un autre.
-    
-- `afficherInfos()` → affiche les infos du compte (numéro, client, solde).
-    
-- (optionnel) `getSolde()` → retourne le solde (lecture seule).
-    
+* `creerCompte(Client client, string numero, double montantInitial, bool afficherMessage = true)` : créer un compte
+* `trouverCompte(string numero)` : retourner un pointeur vers le compte (ou nullptr si inexistant)
+* `trouverClient(string login)` : retourner un pointeur vers le client
+* `afficherTousLesComptes()` : afficher tous les comptes
 
-**Règles :**
+### **Utilisateur / Client / Admin**
 
-- Le solde ne peut pas être négatif.
-    
-- L’accès direct au solde doit être interdit (utilisation de getters/setters).
-    
+* `verifierMotDePasse(string mdp)` : vérifier les identifiants
+* `afficherProfil()` : afficher nom/prénom et type (Client ou Admin)
 
 ---
 
-## 3. Encapsulation et abstraction
-
-- Les attributs sont **privés** (`private`) pour éviter toute modification directe.
-    
-- Les opérations sur le solde passent uniquement par des **méthodes publiques** qui contrôlent les valeurs (encapsulation).
-    
-- Les méthodes de transfert utilisent les méthodes `debiter` et `crediter` pour respecter la cohérence.
-    
-
----
-
-## 4. Diagramme UML simplifié
+## **3️⃣ Organisation des classes**
 
 ```
+Utilisateur
+├── Client
+└── Admin
+
+CompteBancaire
+Banque
+```
+
+### **Classes et responsabilités**
+
+| Classe               | Attributs principaux                      | Méthodes principales                                                      |
+| -------------------- | ----------------------------------------- | ------------------------------------------------------------------------- |
+| Utilisateur          | nom, prénom, login, motDePasse            | verifierMotDePasse(), afficherProfil()                                    |
+| Client (Utilisateur) | adresse                                   | hérite de Utilisateur                                                     |
+| Admin (Utilisateur)  | -                                         | afficherProfil()                                                          |
+| CompteBancaire       | numeroCompte, proprietaire(Client), solde | deposer(), retirer(), afficherInfos()                                     |
+| Banque               | vector<CompteBancaire>, vector<Client>    | creerCompte(), trouverCompte(), afficherTousLesComptes(), trouverClient() |
+
+---
+
+## **4️⃣ Encapsulation et abstraction**
+
+* **Attributs privés** pour protéger les informations sensibles (solde, mot de passe)
+* **Méthodes publiques** pour interagir avec les données (dépôt, retrait, affichage)
+* **Pointeurs / vérifications** pour éviter les accès à des comptes inexistants (nullptr)
+
+---
+
+## **5️⃣ Diagramme simplifié UML**
+
+```
+          +-------------------+
+          |  Utilisateur      |
+          |-------------------|
+          | - nom             |
+          | - prenom          |
+          | - login           |
+          | - motDePasse      |
+          |-------------------|
+          | + verifierMDP()   |
+          | + afficherProfil()|
+          +--------+----------+
+                   |
+          -----------------
+          |               |
+       +-------+       +--------+
+       | Client|       | Admin  |
+       +-------+       +--------+
+       | -      adresse       - | 
+       +------------------------+
+       
 +-------------------+
-|      Client       |
-+-------------------+
-| - idClient : int  |
-| - nom : string    |
-| - prenom : string |
-| - adresse : string|
-+-------------------+
+|  CompteBancaire   |
+|-------------------|
+| - numeroCompte    |
+| - proprietaire    |
+| - solde           |
+|-------------------|
+| + deposer()       |
+| + retirer()       |
 | + afficherInfos() |
 +-------------------+
 
-           1
-           |
-           |
-           *
-+--------------------------+
-|     CompteBancaire       |
-+--------------------------+
-| - numeroCompte : string  |
-| - proprietaire : Client  |
-| - solde : double         |
-+--------------------------+
-| + crediter(montant)      |
-| + debiter(montant)       |
-| + transferer(compte, mnt)|
-| + afficherInfos()        |
-+--------------------------+
++------------------+
+|     Banque       |
+|------------------|
+| - comptes        |
+| - clients        |
+|------------------|
+| + creerCompte()  |
+| + trouverCompte()|
+| + afficherTous() |
+| + trouverClient()|
++------------------+
 ```
 
 ---
 
-## 5. Plan de travail pour l’implémentation (et versioning Git)
+## **6️⃣ Liste des méthodes à implémenter**
 
-| Étape | Tâche                                        | Commande Git suggérée                                               |
-| ----- | -------------------------------------------- | ------------------------------------------------------------------- |
-| 1     | Création du dépôt et des fichiers            | `git init`, `git add .`, `git commit -m "Initialisation du projet"` |
-| 2     | Implémentation de la classe `Client`         | `git commit -m "Ajout de la classe Client"`                         |
-| 3     | Implémentation de la classe `CompteBancaire` | `git commit -m "Création de la classe CompteBancaire"`              |
-| 4     | Ajout des méthodes `crediter` et `debiter`   | `git commit -m "Ajout des méthodes de crédit et retrait"`           |
-| 5     | Ajout du transfert entre comptes             | `git commit -m "Ajout de la méthode transferer"`                    |
-| 6     | Ajout de la fonction `afficherInfos`         | `git commit -m "Ajout de l’affichage des infos du compte"`          |
-| 7     | Tests et corrections                         | `git commit -m "Tests unitaires et corrections"`                    |
-| 8     | Refactorisation et amélioration du code      | `git branch refactor`, puis `git merge refactor`                    |
+### **CompteBancaire**
+
+* `deposer(double montant)`
+* `retirer(double montant)`
+* `afficherInfos()`
+* `getNumero()`
+* `getSolde()`
+* `getProprietaire()`
+
+### **Utilisateur**
+
+* `verifierMotDePasse(string mdp)`
+* `afficherProfil()`
+
+### **Client / Admin**
+
+* `afficherProfil()` (override)
+
+### **Banque**
+
+* `creerCompte(Client client, string numero, double montantInitial, bool afficherMessage = true)`
+* `trouverCompte(string numero)`
+* `trouverClient(string login)`
+* `afficherTousLesComptes()`
+* `ajouterClient(Client client)`
 
 ---
 
-## 6. Possibilités d’extension
-    
-- Classe `Banque` pour **gérer plusieurs comptes**.
-        
-- Interface utilisateur en ligne de commande.
-    
+## **7️⃣ Plan de travail pour implémentation**
 
----
+1. Créer les classes **Utilisateur, Client, Admin**
+2. Créer la classe **CompteBancaire**
+3. Créer la classe **Banque**
+4. Implémenter les opérations de base (dépôt, retrait, affichage)
+5. Implémenter la création de comptes par l’Admin
+6. Implémenter la connexion avec login/mot de passe
+7. Mettre en place un **menu pour Admin et Client**
+8. Tester avec plusieurs clients
+9. Ajouter option pour **créer des comptes sans message automatique** (bool afficherMessage)
+10. Vérifier les cas limites (solde insuffisant, compte inexistant)
