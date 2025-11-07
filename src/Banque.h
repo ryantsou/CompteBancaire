@@ -15,6 +15,8 @@ public:
     CompteBancaire* trouverCompte(string numero);
     void afficherTousLesComptes() const;
     void creerCompte(Client client, string numero, double montantInitial);
+    void supprimerCompte(string numero);
+    bool transfererArgent(string numeroSource, string numeroDestination, double montant);
 };
 
 #endif
