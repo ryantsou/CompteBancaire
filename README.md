@@ -1,10 +1,10 @@
 ------------------------------------------------------------------------------------------------------------------
 
-* **Rôle** : Classe de base pour tout utilisateur du système (Client ou Admin)
+ **Rôle** : Classe de base pour tout utilisateur du système (Client ou Admin)
 
 # Instructions — CompteBancaire
 
-Compilation
+**COMPILATION**
 ---------
 1. Ouvrez un terminal et placez-vous dans le dossier `src/` du projet.
 
@@ -63,6 +63,3 @@ cd src
 g++ *.cpp -o banque
 ./banque
 ```
-
-      | + ajouterClient()          |
-
