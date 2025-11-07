@@ -2,18 +2,21 @@
 #include "Banque.h"
 #include "Admin.h"
 #include "Client.h"
+//#include "CompteBancaire.h"
+//#include "Utilisateur.h"
 using namespace std;
 
 int main() {
     Banque banque;
-    Admin admin("Admin", "admin", "admin", "1234");
-    Client client1("RAJHONSON", "Sedra", "sedra", "1234", "96_BD_Mansart");
-    Client client2("Martin", "Alice", "alice", "1111", "Lyon");
-        Client client3("Dupont", "Jean", "jean", "2222", "Paris");
+    Admin admin("Admin", "admin", "admin", "azerty");
+    Client client1("RAJHONSON", "Sedra", "sedra", "4321", "96_BD_Mansart");
+    Client client2("TONFEU NJODIEU", "Styve friedel", "styvy", "Nengo273@#", "carrefour tomate");
+    Client client3("TETOG TATCHIM", "DJEF CABREL", "dt212649", "dt212649", "09 avenue alain savary");
+
 
     banque.creerCompte(client1, "C001", 1000);
     banque.creerCompte(client2, "C002", 500);
-    banque.creerCompte(client3, "C003", 750);
+    banque.creerCompte(client3, "C003", 1000500);
 
     string login, mdp;
     cout << "=== Connexion ===\n";
@@ -26,7 +29,8 @@ int main() {
         cout << "Bienvenue administrateur !\n";
         int choix;
         do {
-            cout << "\n1. Créer un nouveau compte\n2. Afficher tous les comptes\n3. Supprimer un compte\n0. Quitter\n";            cout << "Choix : ";
+            cout << "\n1. Créer un nouveau compte\n2. Afficher tous les comptes\n0. Quitter\n";
+            cout << "Choix : ";
             cin >> choix;
             if (choix == 1) {
                 string nom, prenom, adresse, loginClient, mdpClient, num;
@@ -43,10 +47,6 @@ int main() {
             } else if (choix == 2) {
                 banque.afficherTousLesComptes();
             }
-                        } else if (choix == 3) {
-                string numCompte;
-                cout << "Numéro du compte à supprimer : "; cin >> numCompte;
-                banque.supprimerCompte(numCompte);
         } while (choix != 0);
     }
 
@@ -56,7 +56,8 @@ int main() {
         int choix;
         double montant;
         do {
-            cout << "\n1. Dépôt\n2. Retrait\n3. Voir le solde\n4. Transférer de l'argent\n0. Quitter\n";            cout << "Choix : ";
+            cout << "\n1. Dépôt\n2. Retrait\n3. Voir le solde\n0. Quitter\n";
+            cout << "Choix : ";
             cin >> choix;
             switch (choix) {
                 case 1:
@@ -70,23 +71,18 @@ int main() {
                 case 3:
                     compte->afficherInfos();
                     break;
-                                case 4:
-                    string numDest;
-                    cout << "Numéro de compte destination : "; cin >> numDest;
-                    cout << "Montant à transférer : "; cin >> montant;
-                    banque.transfererArgent("C001", numDest, montant);
-                    break;
             }
         } while (choix != 0);
     }
-        
+
     else if (login == client2.getLogin() && client2.verifierMotDePasse(mdp)) {
         cout << "Bienvenue " << client2.getLogin() << " !\n";
         CompteBancaire* compte = banque.trouverCompte("C002");
         int choix;
         double montant;
         do {
-            cout << "\n1. Dépôt\n2. Retrait\n3. Voir le solde\n4. Transférer de l'argent\n0. Quitter\n";            cout << "Choix : ";
+            cout << "\n1. Dépôt\n2. Retrait\n3. Voir le solde\n0. Quitter\n";
+            cout << "Choix : ";
             cin >> choix;
             switch (choix) {
                 case 1:
@@ -100,23 +96,18 @@ int main() {
                 case 3:
                     compte->afficherInfos();
                     break;
-                                case 4:
-                    string numDest;
-                    cout << "Numéro de compte destination : "; cin >> numDest;
-                    cout << "Montant à transférer : "; cin >> montant;
-                    banque.transfererArgent("C002", numDest, montant);
-                    break;
             }
         } while (choix != 0);
     }
-        
+
     else if (login == client3.getLogin() && client3.verifierMotDePasse(mdp)) {
         cout << "Bienvenue " << client3.getLogin() << " !\n";
         CompteBancaire* compte = banque.trouverCompte("C003");
         int choix;
         double montant;
         do {
-            cout << "\n1. Dépôt\n2. Retrait\n3. Voir le solde\n4. Transférer de l'argent\n0. Quitter\n";            cout << "Choix : ";
+            cout << "\n1. Dépôt\n2. Retrait\n3. Voir le solde\n0. Quitter\n";
+            cout << "Choix : ";
             cin >> choix;
             switch (choix) {
                 case 1:
@@ -130,18 +121,13 @@ int main() {
                 case 3:
                     compte->afficherInfos();
                     break;
-                                case 4:
-                    string numDest;
-                    cout << "Numéro de compte destination : "; cin >> numDest;
-                    cout << "Montant à transférer : "; cin >> montant;
-                    banque.transfererArgent("C003", numDest, montant);
-                    break;
             }
         } while (choix != 0);
     }
 
+
     else {
-        cout << "❌ Identifiants incorrects.\n";
+        cout << "!! Identifiants incorrects.\n";
     }
 
     return 0;
