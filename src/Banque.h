@@ -1,9 +1,7 @@
 #ifndef BANQUE_H
 #define BANQUE_H
 
-#include <vector>#include <unordered_map>
-#include <fstream>
-#include <sstream>
+#include <vector>
 #include "CompteBancaire.h"
 #include "Client.h"
 using namespace std;
@@ -15,13 +13,13 @@ private:
 public:
     void ajouterCompte(const CompteBancaire &compte);
     CompteBancaire* trouverCompte(string numero);
+    CompteBancaire* trouverCompteParCredentials(const std::string& login, const std::string& mdp);
     void afficherTousLesComptes() const;
     void creerCompte(Client client, string numero, double montantInitial);
-    void supprimerCompte(string numero);    std::unordered_map<std::string, Client> clients;
-    void sauverClients();
-    void chargerClients();
-    void creerClient(const Client& client);
+    void supprimerCompte(string numero);
     bool transfererArgent(string numeroSource, string numeroDestination, double montant);
+    void sauverComptes() const;
+    void chargerComptes();
 };
 
 #endif
