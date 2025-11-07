@@ -9,9 +9,11 @@ int main() {
     Admin admin("Admin", "admin", "admin", "1234");
     Client client1("RAJHONSON", "Sedra", "sedra", "1234", "96_BD_Mansart");
     Client client2("Martin", "Alice", "alice", "1111", "Lyon");
+        Client client3("Dupont", "Jean", "jean", "2222", "Paris");
 
     banque.creerCompte(client1, "C001", 1000);
-    //banque.creerCompte(client2, "C002", 500);
+    banque.creerCompte(client2, "C002", 500);
+    banque.creerCompte(client3, "C003", 750);
 
     string login, mdp;
     cout << "=== Connexion ===\n";
@@ -48,6 +50,56 @@ int main() {
     else if (login == client1.getLogin() && client1.verifierMotDePasse(mdp)) {
         cout << "Bienvenue " << client1.getLogin() << " !\n";
         CompteBancaire* compte = banque.trouverCompte("C001");
+        int choix;
+        double montant;
+        do {
+            cout << "\n1. Dépôt\n2. Retrait\n3. Voir le solde\n0. Quitter\n";
+            cout << "Choix : ";
+            cin >> choix;
+            switch (choix) {
+                case 1:
+                    cout << "Montant à déposer : "; cin >> montant;
+                    compte->deposer(montant);
+                    break;
+                case 2:
+                    cout << "Montant à retirer : "; cin >> montant;
+                    compte->retirer(montant);
+                    break;
+                case 3:
+                    compte->afficherInfos();
+                    break;
+            }
+        } while (choix != 0);
+    }
+        
+    else if (login == client2.getLogin() && client2.verifierMotDePasse(mdp)) {
+        cout << "Bienvenue " << client2.getLogin() << " !\n";
+        CompteBancaire* compte = banque.trouverCompte("C002");
+        int choix;
+        double montant;
+        do {
+            cout << "\n1. Dépôt\n2. Retrait\n3. Voir le solde\n0. Quitter\n";
+            cout << "Choix : ";
+            cin >> choix;
+            switch (choix) {
+                case 1:
+                    cout << "Montant à déposer : "; cin >> montant;
+                    compte->deposer(montant);
+                    break;
+                case 2:
+                    cout << "Montant à retirer : "; cin >> montant;
+                    compte->retirer(montant);
+                    break;
+                case 3:
+                    compte->afficherInfos();
+                    break;
+            }
+        } while (choix != 0);
+    }
+        
+    else if (login == client3.getLogin() && client3.verifierMotDePasse(mdp)) {
+        cout << "Bienvenue " << client3.getLogin() << " !\n";
+        CompteBancaire* compte = banque.trouverCompte("C003");
         int choix;
         double montant;
         do {
