@@ -26,8 +26,7 @@ int main() {
         cout << "Bienvenue administrateur !\n";
         int choix;
         do {
-            cout << "\n1. Créer un nouveau compte\n2. Afficher tous les comptes\n0. Quitter\n";
-            cout << "Choix : ";
+            cout << "\n1. Créer un nouveau compte\n2. Afficher tous les comptes\n3. Supprimer un compte\n0. Quitter\n";            cout << "Choix : ";
             cin >> choix;
             if (choix == 1) {
                 string nom, prenom, adresse, loginClient, mdpClient, num;
@@ -44,6 +43,10 @@ int main() {
             } else if (choix == 2) {
                 banque.afficherTousLesComptes();
             }
+                        } else if (choix == 3) {
+                string numCompte;
+                cout << "Numéro du compte à supprimer : "; cin >> numCompte;
+                banque.supprimerCompte(numCompte);
         } while (choix != 0);
     }
 
@@ -53,8 +56,7 @@ int main() {
         int choix;
         double montant;
         do {
-            cout << "\n1. Dépôt\n2. Retrait\n3. Voir le solde\n0. Quitter\n";
-            cout << "Choix : ";
+            cout << "\n1. Dépôt\n2. Retrait\n3. Voir le solde\n4. Transférer de l'argent\n0. Quitter\n";            cout << "Choix : ";
             cin >> choix;
             switch (choix) {
                 case 1:
@@ -67,6 +69,12 @@ int main() {
                     break;
                 case 3:
                     compte->afficherInfos();
+                    break;
+                                case 4:
+                    string numDest;
+                    cout << "Numéro de compte destination : "; cin >> numDest;
+                    cout << "Montant à transférer : "; cin >> montant;
+                    banque.transfererArgent("C001", numDest, montant);
                     break;
             }
         } while (choix != 0);
@@ -78,8 +86,7 @@ int main() {
         int choix;
         double montant;
         do {
-            cout << "\n1. Dépôt\n2. Retrait\n3. Voir le solde\n0. Quitter\n";
-            cout << "Choix : ";
+            cout << "\n1. Dépôt\n2. Retrait\n3. Voir le solde\n4. Transférer de l'argent\n0. Quitter\n";            cout << "Choix : ";
             cin >> choix;
             switch (choix) {
                 case 1:
@@ -92,6 +99,12 @@ int main() {
                     break;
                 case 3:
                     compte->afficherInfos();
+                    break;
+                                case 4:
+                    string numDest;
+                    cout << "Numéro de compte destination : "; cin >> numDest;
+                    cout << "Montant à transférer : "; cin >> montant;
+                    banque.transfererArgent("C002", numDest, montant);
                     break;
             }
         } while (choix != 0);
@@ -103,8 +116,7 @@ int main() {
         int choix;
         double montant;
         do {
-            cout << "\n1. Dépôt\n2. Retrait\n3. Voir le solde\n0. Quitter\n";
-            cout << "Choix : ";
+            cout << "\n1. Dépôt\n2. Retrait\n3. Voir le solde\n4. Transférer de l'argent\n0. Quitter\n";            cout << "Choix : ";
             cin >> choix;
             switch (choix) {
                 case 1:
@@ -117,6 +129,12 @@ int main() {
                     break;
                 case 3:
                     compte->afficherInfos();
+                    break;
+                                case 4:
+                    string numDest;
+                    cout << "Numéro de compte destination : "; cin >> numDest;
+                    cout << "Montant à transférer : "; cin >> montant;
+                    banque.transfererArgent("C003", numDest, montant);
                     break;
             }
         } while (choix != 0);
