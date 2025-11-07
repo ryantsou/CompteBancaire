@@ -1,6 +1,4 @@
-### ESIREM ###
-###--------------------###
-### 1️⃣ `Utilisateur` (Utilisateur.cpp / Utilisateur.h)
+------------------------------------------------------------------------------------------------------------------
 
 * **Rôle** : Classe de base pour tout utilisateur du système (Client ou Admin)
 
@@ -56,7 +54,6 @@ Exemple :
 
 ```
 C001|RAJHONSON|Sedra|sedra|4321|96_BD_Mansart|1000.00
-C004|Caroline|Andriaparany|caro|caro|Antananarivo|4000.00
 ```
 
 Commandes rapides
