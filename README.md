@@ -3,145 +3,127 @@
 ### 1️⃣ `Utilisateur` (Utilisateur.cpp / Utilisateur.h)
 
 * **Rôle** : Classe de base pour tout utilisateur du système (Client ou Admin)
-* **Attributs privés** :
 
-  * `nom`, `prenom`
-  * `login` (identifiant unique)
-  * `motDePasse`
-* **Méthodes publiques** :
+# CompteBancaire — mini-projet de gestion bancaire
 
-  * `verifierMotDePasse(string mdp)` → renvoie `true` si le mot de passe correspond
-  * `afficherProfil()` → affiche nom et prénom
-* **Héritage** : base pour `Client` et `Admin`
+Ce dépôt contient une petite application C++ pour gérer des comptes bancaires, des clients et un administrateur en ligne de commande. Le projet a évolué pour inclure :
 
----
+- un module de persistence simple (fichier `comptes.txt`)
+- une séparation de l'interface menu (`Menu.h` / `Menu.cpp`)
+- sérialisation / désérialisation des comptes pour sauvegarder/charger l'état
 
-### 2️⃣ `Client` (Client.cpp / Client.h)
+Ce README documente l'architecture actuelle, comment compiler/exécuter, le format de sauvegarde, et quelques recommandations.
 
-* **Rôle** : Représente un utilisateur simple
-* **Attributs spécifiques** :
+## Arborescence principale
 
-  * `adresse` ou `ville`
-* **Méthodes spécifiques** :
+src/
+- Admin.cpp / Admin.h
+- Client.cpp / Client.h
+- CompteBancaire.cpp / CompteBancaire.h
+- Banque.cpp / Banque.h
+- Menu.cpp / Menu.h        # menu client déplacé ici
+- main.cpp
+- comptes.txt              # fichier de persistence (généré/lu par la banque)
 
-  * `afficherProfil()` (override) → affiche profil + adresse
-* **Héritage** : hérite de `Utilisateur`
 
----
+## Architecture (résumé)
 
-### 3️⃣ `Admin` (Admin.cpp / Admin.h)
+- `Utilisateur` : base pour `Client` et `Admin` (nom, prénom, login, motDePasse)
+- `Client` : ajoute l'adresse et l'affichage spécifique
+- `Admin` : utilisateur avec droits d'administration
+- `CompteBancaire` : numéro, propriétaire (`Client`), solde; opérations dépôt/retrait et sérialisation
+- `Banque` : container des comptes et responsabilité de la persistance (sauver/charger)
+- `Menu` : interface textuelle pour les clients (déplacée dans `Menu.cpp`/`Menu.h`)
 
-* **Rôle** : Utilisateur spécial qui peut gérer la banque
-* **Méthodes spécifiques** :
 
-  * `afficherProfil()` (override)
-  * peut créer des comptes pour les clients via `Banque`
-* **Héritage** : hérite de `Utilisateur`
-* **Pas d’attributs spécifiques pour l’instant**
+## Compilation
 
----
+Depuis le répertoire `src/` :
 
-### 4️⃣ `CompteBancaire` (CompteBancaire.cpp / CompteBancaire.h)
+```sh
+g++ *.cpp -o banque
+```
 
-* **Rôle** : Représente un compte bancaire avec solde et opérations
-* **Attributs privés** :
+Cela produit le binaire `banque` dans `src/`.
 
-  * `numeroCompte` (string)
-  * `proprietaire` (Client)
-  * `solde` (double)
-* **Méthodes publiques** :
 
-  * `deposer(double montant)` → ajoute de l’argent
-  * `retirer(double montant)` → retire de l’argent si possible
-  * `afficherInfos()` → affiche numéro, solde et propriétaire
-  * `getNumero()`, `getSolde()`, `getProprietaire()`
+## Exécution
 
----
+Lancer le binaire :
 
-### 5️⃣ `Banque` (Banque.cpp / Banque.h)
+```sh
+./banque
+```
 
-* **Rôle** : Gère tous les comptes et tous les clients
-* **Attributs privés** :
+Au démarrage, le programme charge `comptes.txt` s'il existe. Si aucun compte n'est présent, des comptes de démonstration sont créés.
 
-  * `vector<CompteBancaire> comptes`
-  * `vector<Client> clients`
-* **Méthodes publiques** :
 
-  * `creerCompte(Client client, string numero, double montantInitial, bool afficherMessage = true)`
-  * `trouverCompte(string numero)` → retourne pointeur vers le compte (ou nullptr)
-  * `trouverClient(string login)` → retourne pointeur vers le client (ou nullptr)
-  * `ajouterClient(Client client)` → ajoute un client à la banque
-  * `afficherTousLesComptes()`
+## Authentification
 
----
+- Admin : login `admin`, mot de passe `azerty` (codé en dur pour le moment)
+- Les clients : login et mot de passe sont stockés dans `comptes.txt` (voir format ci‑dessous)
 
-### 6️⃣ `main.cpp`
+Vous pouvez vous authentifier en entrant votre login et mot de passe à l'invite.
 
-* **Rôle** : Point d’entrée du programme, gère :
 
-  * Connexion des utilisateurs (login + mot de passe)
-  * Menu dynamique selon type (Admin ou Client)
-  * Appel aux méthodes de `Banque` et `CompteBancaire`
+## Format du fichier `comptes.txt`
 
----
+Chaque ligne représente un compte et suit le format (séparateur `|`) :
 
-### 3️⃣ `Organisation des classes`
+```
+numero|nom|prenom|login|motDePasse|adresse|solde
+```
 
-               +--------------------+
-               |  Utilisateur       |  <-- Utilisateur.cpp / Utilisateur.h
-               |--------------------|
-               | - nom              |
-               | - prenom           |
-               | - login            |
-               | - motDePasse       |
-               |--------------------|
-               | + verifierMDP()    |
-               | + afficherProfil() |
-               +--------+-----------+
-                        ^
-                        |
-            ----------------------------------------------------------------
-            |                                                              |
-       +-------------------+                                +--------------------+ 
-       | Client            |                                |  CompteBancaire    |
-       |-------------------|                                |--------------------|
-       | - adresse         |                                | - numeroCompte     |
-       |-------------------|                                | - proprietaire     |
-       | + afficherProfil()|                                | - solde            |
-       +-------------------+                                |--------------------|
-            |                                               | + deposer()        |
-      +-------------------------------+                     | + retirer()        |
-      | Admin                         |                     | + afficherInfos()  |
-      |-------------------------------|                     | + getNumero()      |
-      | - (aucun attribut spécifique) |                     | + getSolde()       |
-      |-------------------------------|                     | + getProprietaire()|
-      | + afficherProfil()            |                     +--------------------+
-      +-------------------------------+                              |
-        |                                                            |
-        |                                                             |
-      +----------------------------+                                 |
-      |     Banque                 |  <------------------------------|
-      |----------------------------|
-      | - comptes                  | vector<CompteBancaire>
-      | - clients                  | vector<Client>
-      |----------------------------|
-      | + creerCompte()            |
+Exemple :
+
+```
+C001|RAJHONSON|Sedra|sedra|4321|96_BD_Mansart|1000.00
+C004|Caroline|Andriaparany|caro|caro|Antananarivo|4000.00
+```
+
+Remarques :
+- Le projet utilise une sérialisation simple ; si vos champs peuvent contenir `|`, remplacez ou échappez ce caractère.
+- Les mots de passe sont actuellement stockés en clair (voir section Sécurité ci‑dessous).
+
+
+## Fonctionnalités principales
+
+- Création de compte (admin)
+- Affichage de tous les comptes (admin)
+- Suppression de compte (admin)
+- Dépôt / Retrait / Consultation de solde (clients)
+- Transfert entre comptes
+- Persistance automatique : la banque appelle `sauverComptes()` après les opérations mutantes
+
+
+## Sécurité et améliorations recommandées
+
+1. Ne pas stocker les mots de passe en clair : implémenter un hachage (bcrypt recommandé). Je peux mettre en place un hachage simple (SHA‑256) ou intégrer bcrypt si vous le souhaitez.
+2. Utiliser JSON (ex. nlohmann/json) pour une persistance plus robuste, avec échappement automatique des champs.
+3. Ajouter des tests unitaires pour dépôt/retrait/transfert/sauvegarde‑chargement.
+4. Ajouter confirmation interactive avant suppression de compte (sécurité UX).
+
+
+## Notes développeur
+
+- Le menu client a été déplacé dans `Menu.h` / `Menu.cpp` pour séparer la logique UI du `main`.
+- La persistance est gérée par `Banque::sauverComptes()` et `Banque::chargerComptes()` ; le format est la responsabilité de `CompteBancaire::serialize()` / `CompteBancaire::deserialize()` et `Client::serializeFields()` / `Client::deserializeFromFields()` pour garder l'encapsulation.
+
+
+## Commandes utiles
+
+```sh
+cd src
+g++ *.cpp -o banque   # compiler
+./banque              # lancer
+```
+
+
+Si vous voulez que je :
+
+- remplace la persistance par JSON,
+- hache les mots de passe avant sauvegarde,
+- ajoute la confirmation avant suppression,
+- ou génère des tests unitaires — dites‑moi et je l'implémente.
       | + ajouterClient()          |
-      | + trouverCompte()          |
-      | + trouverClient()          |
-      | + afficherTousLesComptes() |
-      +----------------------------+
-
-
-
-
-## **📌 Synthèse des relations**
-
-* `Client` et `Admin` héritent de `Utilisateur`
-* `CompteBancaire` contient un `Client` comme propriétaire
-* `Banque` contient :
-
-  * tous les `Client` existants
-  * tous les `CompteBancaire`
-* `main.cpp` utilise `Banque`, `Client`, `Admin`, `CompteBancaire` pour orchestrer le programme
 
